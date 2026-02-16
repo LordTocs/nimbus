@@ -1,0 +1,14 @@
+{
+	"extends": ["./tsconfig.shared.json"],
+	"compilerOptions": {
+		"module": "es2022",
+		"moduleResolution": "bundler",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"composite": true,
+		
+		"sourceMap": true,
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"types": ["vite/client"]
+	},
+}

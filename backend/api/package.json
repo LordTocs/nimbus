@@ -1,0 +1,18 @@
+{
+	"name": "@nimbus/api-backend",
+	"version": "0.0.1",
+	"description": "",
+	"main": "src/backend-core-main.ts",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"0http": "^4.4.0",
+		"http-errors": "^2.0.1"
+	},
+	"devDependencies": {
+		"@types/http-errors": "^2"
+	}
+}

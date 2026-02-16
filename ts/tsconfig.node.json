@@ -1,0 +1,14 @@
+{
+	"extends": ["./tsconfig.shared.json"],
+    "compilerOptions": {
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+
+        "useDefineForClassFields": true,
+        "skipLibCheck": true,
+
+		"isolatedModules": true,
+        
+		"composite": true,
+    }
+}

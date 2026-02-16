@@ -1,0 +1,15 @@
+{
+  "name": "@nimbus/util-shared",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/shared-util-main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bson": "^6.10.4",
+    "typebox": "^1.0.81"
+  }
+}

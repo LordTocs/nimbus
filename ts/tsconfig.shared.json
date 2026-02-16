@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "useDefineForClassFields": true,
+        "skipLibCheck": true,
+        // "allowImportingTsExtensions": true,
+		// "rewriteRelativeImportExtensions": true,
+
+		"esModuleInterop": true,
+
+		// "resolveJsonModule": true,
+		"isolatedModules": true,
+        
+		"composite": true,
+
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+    }
+}

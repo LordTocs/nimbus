@@ -1,0 +1,11 @@
+**/.git
+**/.svn
+**/.hg
+**/node_modules
+
+**/dist
+**/release
+**/.yarn
+**/.vscode
+**/.github
+**/docs
