@@ -12,6 +12,7 @@
   "workspaces": [
     "backend/**",
     "frontend/**",
-    "shared/**"
+    "shared/**",
+    "example/**"
   ]
 }

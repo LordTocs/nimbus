@@ -1,4 +1,4 @@
-import Type, { Static, StaticDecode, TArray, TObject, TProperties, TSchema, StaticObject, TOptional } from "typebox"
+import Type, { Static, StaticDecode, TArray, TObject, TProperties, TSchema, StaticObject, TOptional, TInterface } from "typebox"
 import {
 	CreateIndexesOptions,
 	IndexDescriptionInfo,
@@ -7,7 +7,7 @@ import {
 	Collection as MCollection,
 	ObjectId,
 } from "mongodb"
-import { addMongoInit, getMongoConnection } from "./db-connection"
+import { addMongoInit, NimbusMongoDB } from "./db-connection"
 import { CType, MaybePromise, TObjectId } from "@nimbus/util-shared"
 import { useLogger } from "@nimbus/util-backend"
 import _isEqual from "lodash/isEqual"
@@ -15,7 +15,14 @@ import assert from "node:assert"
 
 export type TMongoDocument<T extends TProperties = TProperties> = TObject<T & { _id: TObjectId }>
 
-export type StaticMongo<T extends TMongoDocument> = Static<T>
+export type StaticMongo<T extends TMongoDocument> = StaticObject<[], "Decode", {}, {}, Omit<T["properties"], "_id">>
+
+const t = Type.Object({
+	_id: CType.ObjectId(),
+	ahhh: Type.String(),
+})
+
+type tm = StaticMongo<typeof t>
 
 type TDeepMongoTypes = TObject | TArray
 
@@ -36,11 +43,12 @@ type TMongoIndexObjKeys<T extends TProperties> = {
 
 type TShedOptional<T extends TSchema> = T extends TOptional<infer Inner> ? Inner : T
 
-type TMongoIndexKeys<T extends TSchema> = T extends TObject<infer TProps>
-	? TMongoIndexObjKeys<TProps>
-	: T extends TArray<infer ItemSchema>
-	? TMongoIndexKeys<ItemSchema>
-	: never
+type TMongoIndexKeys<T extends TSchema> =
+	T extends TObject<infer TProps>
+		? TMongoIndexObjKeys<TProps>
+		: T extends TArray<infer ItemSchema>
+			? TMongoIndexKeys<ItemSchema>
+			: never
 
 const logger = useLogger("mongo")
 
@@ -134,9 +142,10 @@ function isIndexUpdateCompatible(requestedIndex: GenericIndexSpec, existingIndex
 }
 
 export async function ensureIndexSettings(
+	server: NimbusMongoDB,
 	collectionName: string,
 	requestedIndex: GenericIndexSpec,
-	existingIndex: IndexDescriptionInfo
+	existingIndex: IndexDescriptionInfo,
 ) {
 	const changes: Record<string, any> = {}
 
@@ -154,24 +163,23 @@ export async function ensureIndexSettings(
 	}
 
 	if (Object.keys(changes).length > 0) {
-		await getMongoConnection()
-			.db()
-			.command({
-				collMod: collectionName,
-				index: {
-					keyPattern: requestedIndex.key,
-					...changes,
-				},
-			})
+		await server.internalClient.db().command({
+			collMod: collectionName,
+			index: {
+				keyPattern: requestedIndex.key,
+				...changes,
+			},
+		})
 	}
 }
 
 export function defineCollection<T extends TMongoDocument>(
+	server: NimbusMongoDB,
 	name: string,
 	schema: T,
-	indices: Array<TypedIndexSpec<T>> = []
+	indices: Array<TypedIndexSpec<T>> = [],
 ): MCollection<StaticMongo<T>> {
-	const collection = getMongoConnection().db().collection<StaticMongo<T>>(name)
+	const collection = server.internalClient.db().collection<StaticMongo<T>>(name)
 
 	const init = async () => {
 		const existingIndices = await collection.indexes({ full: true })
@@ -181,7 +189,7 @@ export function defineCollection<T extends TMongoDocument>(
 			const requestedIndex = indices.find((i) => isIndexUpdateCompatible(i, existingIndex))
 
 			if (requestedIndex) {
-				await ensureIndexSettings(name, requestedIndex, existingIndex)
+				await ensureIndexSettings(server, name, requestedIndex, existingIndex)
 			} else {
 				unmatchedIndices.push(existingIndex)
 			}
@@ -202,7 +210,7 @@ export function defineCollection<T extends TMongoDocument>(
 		//TODO: Add BSON validator
 	}
 
-	addMongoInit(async () => {
+	addMongoInit(server, async () => {
 		try {
 			await init()
 			logger.log("Initialized mongo collection", name)
@@ -215,19 +223,33 @@ export function defineCollection<T extends TMongoDocument>(
 	return collection
 }
 
-const NestTest = Type.Object({
-	d: Type.Number(),
-	e: Type.String(),
-})
+// const NestTest = Type.Object({
+// 	d: Type.Number(),
+// 	e: Type.String(),
+// })
 
-const TestDocument = Type.Object({
-	_id: CType.ObjectId(),
-	a: Type.String(),
-	b: Type.Optional(NestTest),
-})
-type TestDocument = StaticDecode<typeof TestDocument>
-type TestDocSchema = typeof TestDocument
-type TestDocKeys = TMongoIndexObjKeys<TestDocSchema["properties"]>
+// const TestDocument = Type.Object({
+// 	_id: CType.ObjectId(),
+// 	a: Type.String(),
+// 	b: Type.Optional(NestTest),
+// })
+
+// const TestNotDocument = Type.Object({
+// 	a: Type.String(),
+// 	b: Type.String()
+// })
+// const testServer = useMongoServer("ahhh")
+
+// type TestDocument = StaticDecode<typeof TestDocument>
+// const notResult = defineCollection(testServer, "ahh", TestNotDocument)
+// const result = defineCollection(testServer, "ahhh", TestDocument)
+
+// const a = await result.find({}).toArray()
+
+
+
+// type TestDocSchema = typeof TestDocument
+// type TestDocKeys = TMongoIndexObjKeys<TestDocSchema["properties"]>
 
 // defineCollection("testdocuments", TestDocument, [
 // 	{

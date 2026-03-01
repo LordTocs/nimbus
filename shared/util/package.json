@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bson": "^6.10.4",
+    "bson": "^7.2.0",
     "typebox": "^1.0.81"
   }
 }

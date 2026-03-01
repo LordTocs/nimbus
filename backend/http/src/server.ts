@@ -1,16 +1,26 @@
 import { Protocol, Request, Response, Server, IRouter, RequestHandler, StepFunction } from "0http/common"
 import createHttpError, { isHttpError } from "http-errors"
 import zero, { IBuildServerAndRouterConfig } from "0http"
+import findMyWay from "find-my-way"
 
 import sequential from "0http/lib/router/sequential"
-import { getTracer, useLogger } from "@nimbus/util-backend"
+import { addBootTask, getTracer, useLogger } from "@nimbus/util-backend"
 import { Span, SpanStatusCode } from "@opentelemetry/api"
 
 /*
  * TODO: Perhaps don't expose 0http directly?
- * 
+ *
  */
 
+export type InternalProtocolType = Protocol
+export type InternalHTTPServerType = Server<InternalProtocolType>
+export type InternalRouterType = IRouter<InternalProtocolType>
+
+export interface NimbusHttpServer {
+	port: number
+	internalServer: InternalHTTPServerType
+	internalRouter: InternalRouterType
+}
 
 export type Request0Http<P extends Protocol> = Request<P> & {
 	path: string
@@ -39,43 +49,45 @@ const logger = useLogger("http")
 
 const omittedHttpHeaders = ["authorization"]
 
-function telemetryMiddleware<P extends Protocol>(req: Request0Http<P>, res: Response<P>, next: StepFunction) {
-	const method = req.method?.toUpperCase() ?? "UNKNOWN"
-	getTracer().startActiveSpan(`${method} ${req.url}`, (span) => {
-		req.span = span
+function createTelemetryMiddleware<P extends Protocol>(server: NimbusHttpServer) {
+	return function telemetryMiddleware(req: Request0Http<P>, res: Response<P>, next: StepFunction) {
+		const method = req.method?.toUpperCase() ?? "UNKNOWN"
+		getTracer().startActiveSpan(`${method} ${req.url}`, (span) => {
+			req.span = span
 
-		span.setAttribute("http.request.method", method)
-		span.setAttribute("server.address", port)
+			span.setAttribute("http.request.method", method)
+			span.setAttribute("server.address", server.port)
 
-		for (const key in req.headers) {
-			if (omittedHttpHeaders.includes(key.toLowerCase())) continue
-			const value = req.headers[key]
-			if (value == null) continue
+			for (const key in req.headers) {
+				if (omittedHttpHeaders.includes(key.toLowerCase())) continue
+				const value = req.headers[key]
+				if (value == null) continue
 
-			span.setAttribute(`http.request.header.${key}`, value)
-		}
-
-		res.on("finish", () => {
-			span.setAttribute("http.response.status_code", res.statusCode)
-
-			if (req.headers["content-length"] != null) {
-				span.setAttribute("http.response.body.size", req.headers["content-length"])
+				span.setAttribute(`http.request.header.${key}`, value)
 			}
 
-			if (res.headersSent) {
-				const headers = res.getHeaders()
-				for (const key in headers) {
-					const value = headers[key]
-					if (value == null) continue
-					span.setAttribute(`http.response.header.${key}`, value)
+			res.on("finish", () => {
+				span.setAttribute("http.response.status_code", res.statusCode)
+
+				if (req.headers["content-length"] != null) {
+					span.setAttribute("http.response.body.size", req.headers["content-length"])
 				}
-			}
 
-			span.end()
+				if (res.headersSent) {
+					const headers = res.getHeaders()
+					for (const key in headers) {
+						const value = headers[key]
+						if (value == null) continue
+						span.setAttribute(`http.response.header.${key}`, value)
+					}
+				}
+
+				span.end()
+			})
+
+			return next()
 		})
-
-		return next()
-	})
+	}
 }
 
 function errorHandler<P extends Protocol>(err: any, req: Request<P>, res: Response<P>) {
@@ -97,32 +109,35 @@ function errorHandler<P extends Protocol>(err: any, req: Request<P>, res: Respon
 	res.end(err.message)
 }
 
-export function createHttpServer() {
+
+
+export function useHttpServer(port: number = 80): NimbusHttpServer {
 	const { router, server } = zero({
-		router: sequential(), //TODO replace with find-my-way
+		//@ts-ignore
+		router: findMyWay(), 
 		errorHandler: errorHandler,
 	})
 
-	router.use(telemetryMiddleware as RequestHandler<Protocol>)
+	const nimbusHttp = {
+		port,
+		internalRouter: router,
+		internalServer: server,
+	} as NimbusHttpServer
 
-	return { router, server }
-}
+	router.use(createTelemetryMiddleware(nimbusHttp) as RequestHandler<InternalProtocolType>)
 
-export function createRouter() {
-	return sequential()
-}
+	addBootTask(`Booting Http Server on ${port}`, () => {
+		return new Promise<number>((resolve, reject) => {
+			if (Number.isNaN(port)) {
+				reject(new Error(`Invalid Port! "${process.env.PORT}"`))
+			}
 
-const port = Number(process.env.PORT ?? "80")
-
-export function startHttpServer<P extends Protocol>(server: Server<P>) {
-	return new Promise<number>((resolve, reject) => {
-		if (Number.isNaN(port)) {
-			reject(new Error(`Invalid Port! "${process.env.PORT}"`))
-		}
-
-		server.listen(port, () => {
-			logger.log("Started Server on Port", port)
-			resolve(Number(port))
+			server.listen(port, () => {
+				logger.log("Started Server on Port", port)
+				resolve(Number(port))
+			})
 		})
 	})
+
+	return nimbusHttp
 }

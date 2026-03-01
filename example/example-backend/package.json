@@ -1,0 +1,21 @@
+{
+  "name": "@nimbus/example-backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/example-backend-main.ts",
+  "type":"module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nimbus/api-backend": "workspace:^",
+    "@nimbus/example-shared": "workspace:^",
+    "@nimbus/http": "workspace:^",
+    "@nimbus/mongo": "workspace:^",
+    "@nimbus/util-backend": "workspace:^",
+    "bson": "^7.2.0",
+    "typebox": "^1.0.81"
+  }
+}

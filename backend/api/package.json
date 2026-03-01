@@ -2,7 +2,7 @@
 	"name": "@nimbus/api-backend",
 	"version": "0.0.1",
 	"description": "",
-	"main": "src/backend-core-main.ts",
+	"main": "src/api-backend-main.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

@@ -73,6 +73,16 @@ export interface RouteImplementationOptions<P extends Protocol, AuthExtension ex
 	authentication?: AuthenticationHandler<AuthExtension, P>
 }
 
+
+//TODO: How to wire this up to a server isntance
+
+/**
+ * Implements routes
+ * 
+ * @param routes 
+ * @param options 
+ * @param implementation 
+ */
 export function implementRoutes<
 	TRoutes extends PublicRoutesSchema,
 	P extends Protocol,
