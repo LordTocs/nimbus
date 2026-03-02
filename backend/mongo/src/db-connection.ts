@@ -1,4 +1,4 @@
-import { addBootTask, logger, requiredEnv } from "@nimbus/util-backend"
+import { addBootTask, useLogger } from "@nimbus/util-backend"
 import { MongoClient } from "mongodb"
 
 export interface NimbusMongoDB {
@@ -6,6 +6,8 @@ export interface NimbusMongoDB {
 	connected: boolean
 	initTasks: (() => any)[]
 }
+
+const logger = useLogger("mongo")
 
 export async function addMongoInit(server: NimbusMongoDB, func: () => any) {
 	if (!server.connected) {
@@ -29,6 +31,7 @@ export function useMongoDB(connectionString: string): NimbusMongoDB {
 
 	addBootTask(`Setting Up Mongo Server`, async () => {
 		await result.internalClient.connect()
+        logger.log("Connected to mongo!")
 
 		await Promise.allSettled(result.initTasks)
 
