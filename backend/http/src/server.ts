@@ -1,9 +1,9 @@
 import { Protocol, Request, Response, Server, IRouter, RequestHandler, StepFunction } from "0http/common"
 import createHttpError, { isHttpError } from "http-errors"
-import zero, { IBuildServerAndRouterConfig } from "0http"
+import zero from "0http"
+import sequential from "0http/lib/router/sequential"
 import findMyWay from "find-my-way"
 
-import sequential from "0http/lib/router/sequential"
 import { addBootTask, getTracer, useLogger } from "@nimbus/util-backend"
 import { Span, SpanStatusCode } from "@opentelemetry/api"
 
@@ -113,8 +113,7 @@ function errorHandler<P extends Protocol>(err: any, req: Request<P>, res: Respon
 
 export function useHttpServer(port: number = 80): NimbusHttpServer {
 	const { router, server } = zero({
-		//@ts-ignore
-		router: findMyWay(), 
+		router: sequential(), 
 		errorHandler: errorHandler,
 	})
 
@@ -129,7 +128,7 @@ export function useHttpServer(port: number = 80): NimbusHttpServer {
 	addBootTask(`Booting Http Server on ${port}`, () => {
 		return new Promise<number>((resolve, reject) => {
 			if (Number.isNaN(port)) {
-				reject(new Error(`Invalid Port! "${process.env.PORT}"`))
+				reject(new Error(`Invalid Port! "${port}"`))
 			}
 
 			server.listen(port, () => {
