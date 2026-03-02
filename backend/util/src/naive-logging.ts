@@ -3,6 +3,7 @@ import util from "util"
 import fs from "fs"
 import colors from "@colors/colors"
 import path from "path"
+import { addBootTask } from "./boot"
 
 const fileLogFormat = winston.format.printf((info) => {
 	const timestamp = info.timestamp
@@ -63,6 +64,8 @@ export async function initializeLogging() {
 		],
 	})
 }
+addBootTask("Init Logging", initializeLogging)
+
 
 export interface Logger {
 	log(...args: any[]): void
