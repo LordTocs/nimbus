@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "src/example-backend-main.ts",
-  "type":"module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx ./src/example-backend-main.ts"
   },
   "author": "",
   "license": "ISC",
@@ -17,5 +17,8 @@
     "@nimbus/util-backend": "workspace:^",
     "bson": "^7.2.0",
     "typebox": "^1.0.81"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
   }
 }

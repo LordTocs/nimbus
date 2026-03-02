@@ -90,5 +90,10 @@ implementRoutes(exampleRoutes, {
 })
 
 
-await boot()
+async function main() {
+    await boot()
+}
+
+main()
+ 
 
