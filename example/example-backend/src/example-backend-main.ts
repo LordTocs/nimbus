@@ -1,16 +1,15 @@
 import { useHttpServer } from "@nimbus/http";
-import { boot, requiredEnv, requireEnvNumber } from "@nimbus/util-backend";
+import { boot, useEnvVariable } from "@nimbus/util-backend";
 import { defineCollection, useMongoDB} from "@nimbus/mongo"
 import { ExamplePost, exampleRoutes, ExampleUser } from "@nimbus/example-shared";
 import { implementRoutes } from "@nimbus/api-backend"
 import { ObjectId } from "bson";
 import { toObjectId } from "@nimbus/util-shared";
+import Type from "typebox"
 
 
-
-//TODO: Should this be a typebox type?
-const port = requireEnvNumber("PORT", 80)
-const mongoString = requiredEnv("MONGO_CONNECTION_STRING")
+const port = useEnvVariable("PORT", Type.Number({ default: 80 }))
+const mongoString = useEnvVariable("MONGO_CONNECTION_STRING")
 
 //A more robust settings/secrets system would be great that way the infra compiler can fetch/insert/generate these
 const httpServer = useHttpServer(port)

@@ -1,41 +1,38 @@
 import assert from "node:assert"
 import dotenv from "dotenv"
+import Type, { TSchema, TOptional } from "typebox"
+import Value, { Parser } from "typebox/value"
+import { IsDefault } from "typebox/schema"
 
 let loadedEnv = false
 export function ensureEnvLoaded() {
-    if (!loadedEnv) {
-        loadedEnv = true
-        dotenv.configDotenv()
-    }
+	if (!loadedEnv) {
+		loadedEnv = true
+		dotenv.configDotenv()
+	}
 }
 
-export function requiredEnv(varName: string, err?: string) {
-    ensureEnvLoaded()
-    const value = process.env[varName]
-    assert(value, err ?? `${varName} env var is missing`)
-    return value
-}
+type TEnvResult<T extends TSchema> = T extends TOptional<TSchema> ? Type.StaticDecode<T> | undefined : Type.StaticDecode<T>
 
-//Should this be a typebox type??
+export function useEnvVariable(envName: string) : string
+export function useEnvVariable<T extends TSchema>(envName: string, type: T): TEnvResult<T> 
+export function useEnvVariable<T extends TSchema>(envName: string, type?: T): TEnvResult<T> {
+	ensureEnvLoaded()
 
+    const resolveType = type ?? Type.String()
 
-export function requireEnvNumber(varName: string, defaultValue?: number, err?: string) {
-    ensureEnvLoaded()
-    const value = process.env[varName]
+	const rawValue = process.env[envName]
 
-    if (value == null && defaultValue != null) {
-        return defaultValue
-    }
-
-    assert(value != null, err ?? `${varName} env var (number) is missing`)
-    const numValue = Number(value)
-    assert(!isNaN(numValue), `${varName} is expected to be a number`)
-
-    return numValue
-}
-
-//Thanks Gavin
-export function optionalEnv(varName: string) {
-    ensureEnvLoaded()
-    return process.env[varName]
+	if (rawValue == null) {
+		if (IsDefault(resolveType)) {
+			return Value.Default(resolveType, rawValue) as TEnvResult<T>
+		} else if (Type.IsOptional(resolveType)) {
+            return undefined as TEnvResult<T>
+        } else {
+            throw new Error(`Missing Required Environment Variable "${envName}"`)
+        }
+	} else {
+		//Do we need a decode?? A Check?
+		return Parser(resolveType, rawValue) as TEnvResult<T>
+	}
 }
