@@ -266,7 +266,7 @@ __metadata:
   resolution: "@nimbus/api-shared@workspace:shared/api"
   dependencies:
     bson: "npm:^7.2.0"
-    typebox: "npm:^1.0.81"
+    typebox: "npm:^1.1.6"
   languageName: unknown
   linkType: soft
 
@@ -281,7 +281,7 @@ __metadata:
     "@nimbus/util-backend": "workspace:^"
     bson: "npm:^7.2.0"
     tsx: "npm:^4.21.0"
-    typebox: "npm:^1.0.81"
+    typebox: "npm:^1.1.6"
   languageName: unknown
   linkType: soft
 
@@ -290,7 +290,7 @@ __metadata:
   resolution: "@nimbus/example-frontend@workspace:example/example-frontend"
   dependencies:
     bson: "npm:^7.2.0"
-    typebox: "npm:^1.0.81"
+    typebox: "npm:^1.1.6"
   languageName: unknown
   linkType: soft
 
@@ -301,7 +301,7 @@ __metadata:
     "@nimbus/api-shared": "workspace:^"
     "@nimbus/util-shared": "workspace:^"
     bson: "npm:^7.2.0"
-    typebox: "npm:^1.0.81"
+    typebox: "npm:^1.1.6"
   languageName: unknown
   linkType: soft
 
@@ -316,7 +316,7 @@ __metadata:
     find-my-way: "npm:^9.5.0"
     lodash: "npm:^4.17.23"
     mongodb: "npm:^7.1.0"
-    typebox: "npm:^1.0.81"
+    typebox: "npm:^1.1.6"
   languageName: unknown
   linkType: soft
 
@@ -328,7 +328,7 @@ __metadata:
     "@types/node": "npm:^25.2.3"
     lodash: "npm:^4.17.23"
     mongodb: "npm:^7.1.0"
-    typebox: "npm:^1.0.81"
+    typebox: "npm:^1.1.6"
   languageName: unknown
   linkType: soft
 
@@ -345,6 +345,7 @@ __metadata:
     "@opentelemetry/sdk-trace-node": "npm:^2.5.1"
     "@types/node": "npm:^25.2.3"
     dotenv: "npm:^17.3.1"
+    typebox: "npm:^1.1.6"
     winston: "npm:^3.19.0"
   languageName: unknown
   linkType: soft
@@ -360,7 +361,7 @@ __metadata:
   resolution: "@nimbus/util-shared@workspace:shared/util"
   dependencies:
     bson: "npm:^7.2.0"
-    typebox: "npm:^1.0.81"
+    typebox: "npm:^1.1.6"
   languageName: unknown
   linkType: soft
 
@@ -1585,10 +1586,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typebox@npm:^1.0.81":
-  version: 1.0.81
-  resolution: "typebox@npm:1.0.81"
-  checksum: 10/c9be5b3986e2442dd9de484ab9776bb157d38242dd77f89f7db547b4ae5cda640c318803fea6c9f1ff906d5bced3009a9447cf2b5da10b99b16fb651401694a1
+"typebox@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "typebox@npm:1.1.6"
+  checksum: 10/9ba5b85073129fb2868e1297c106c79343e4c849932e679417024bdbf66eb084a359467f8203c69695711c408a04b170c1b8c22f5db0aa632e0495c97bdbd366
   languageName: node
   linkType: hard
 

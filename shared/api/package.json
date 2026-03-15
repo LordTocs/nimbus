@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "bson": "^7.2.0",
-    "typebox": "^1.0.81"
+    "typebox": "^1.1.6"
   }
 }
