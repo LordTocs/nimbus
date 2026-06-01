@@ -5,7 +5,7 @@ import { ExamplePost, exampleRoutes, ExampleUser } from "@nimbus/example-shared"
 import { implementRoutes } from "@nimbus/api-backend"
 import { ObjectId } from "bson";
 import { toObjectId } from "@nimbus/util-shared";
-import Type from "typebox"
+import Type, { StaticDecode } from "typebox"
 
 
 const port = useEnvVariable("PORT", Type.Number({ default: 80 }))

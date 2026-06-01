@@ -270,6 +270,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@nimbus/cli@workspace:devtools/cli":
+  version: 0.0.0-use.local
+  resolution: "@nimbus/cli@workspace:devtools/cli"
+  dependencies:
+    "@nimbus/scanner": "workspace:^"
+    tsx: "npm:^4.21.0"
+  languageName: unknown
+  linkType: soft
+
 "@nimbus/example-backend@workspace:example/example-backend":
   version: 0.0.0-use.local
   resolution: "@nimbus/example-backend@workspace:example/example-backend"
@@ -329,6 +338,16 @@ __metadata:
     lodash: "npm:^4.17.23"
     mongodb: "npm:^7.1.0"
     typebox: "npm:^1.1.6"
+  languageName: unknown
+  linkType: soft
+
+"@nimbus/scanner@workspace:^, @nimbus/scanner@workspace:devtools/scanner":
+  version: 0.0.0-use.local
+  resolution: "@nimbus/scanner@workspace:devtools/scanner"
+  dependencies:
+    tsx: "npm:^4.21.0"
+    typebox: "npm:^1.1.6"
+    typescript: "npm:^5.9.3"
   languageName: unknown
   linkType: soft
 
@@ -1590,6 +1609,26 @@ __metadata:
   version: 1.1.6
   resolution: "typebox@npm:1.1.6"
   checksum: 10/9ba5b85073129fb2868e1297c106c79343e4c849932e679417024bdbf66eb084a359467f8203c69695711c408a04b170c1b8c22f5db0aa632e0495c97bdbd366
+  languageName: node
+  linkType: hard
+
+"typescript@npm:^5.9.3":
+  version: 5.9.3
+  resolution: "typescript@npm:5.9.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/c089d9d3da2729fd4ac517f9b0e0485914c4b3c26f80dc0cffcb5de1719a17951e92425d55db59515c1a7ddab65808466debb864d0d56dcf43f27007d0709594
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^5.9.3#optional!builtin<compat/typescript>":
+  version: 5.9.3
+  resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/696e1b017bc2635f4e0c94eb4435357701008e2f272f553d06e35b494b8ddc60aa221145e286c28ace0c89ee32827a28c2040e3a69bdc108b1a5dc8fb40b72e3
   languageName: node
   linkType: hard
 

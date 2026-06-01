@@ -4,13 +4,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "yarn workspace @nimbus/example-backend run dev"
+    "dev": "yarn workspace @nimbus/example-backend run dev",
+    "scan": "yarn workspace @nimbus/cli run dev"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "packageManager": "yarn@4.12.0",
   "workspaces": [
+    "devtools/**",
     "backend/**",
     "frontend/**",
     "shared/**",
