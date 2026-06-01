@@ -39,7 +39,7 @@ export async function initializeLogging() {
 
 	const initTime = Date.now()
 
-	const logFileName = `castmate-log-${initTime}.log`
+	const logFileName = `nimbus-log-${initTime}.log`
 
 	//Delete oldest log if there's more than 10
 	const logFiles = fs.readdirSync(logDir)

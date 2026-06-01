@@ -29,7 +29,7 @@ export function useMongoDB(connectionString: string): NimbusMongoDB {
 
 	const result = { internalClient: client, connected: false, initTasks: [] } as NimbusMongoDB
 
-	addBootTask(`Setting Up Mongo Server`, async () => {
+	addBootTask(`Setting Up Mongo Connection`, async () => {
 		await result.internalClient.connect()
         logger.log("Connected to mongo!")
 

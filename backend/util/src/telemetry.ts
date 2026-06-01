@@ -53,7 +53,7 @@ initializeTelemetry()
 export function forceLoad() {}
 
 //TODO: What do we put in here, do we only need one?
-const globalTracer = opentelemetry.trace.getTracer("castmate-backend")
+const globalTracer = opentelemetry.trace.getTracer("nimbus")
 
 export function getTracer() {
 	return globalTracer
